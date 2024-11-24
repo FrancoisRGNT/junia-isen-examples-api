@@ -91,4 +91,3 @@ jobs:
       - name: Apply Terraform changes
         working-directory: ./infrastructure  # Dossier d'infrastructure
         run: terraform apply -auto-approve  # Application des modifications avec Terraform
-`
