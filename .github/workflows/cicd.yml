@@ -1,0 +1,94 @@
+on:
+  push:
+    branches:
+      - main  # Déclenchement uniquement sur des pushs sur la branche main
+  pull_request:
+    branches:
+      - main  # Déclenchement lors des pull requests vers la branche main
+
+env:
+  REGISTRY: ghcr.io  # GitHub Container Registry
+  IMAGE_NAME: ${{ github.repository }}  # Utilisation du nom du repository pour l'image Docker
+
+permissions:
+  contents: read  # Lire le contenu du dépôt
+  packages: write  # Publier les packages Docker
+
+jobs:
+  check_service:
+    runs-on: ubuntu-latest  # Utilisation de Ubuntu pour l'exécution
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4  # Télécharge le code du dépôt
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"  # Spécifie la version de Python à utiliser
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt  # Installe les dépendances Python
+
+      - name: Run tests
+        run: |
+          pytest tests/  # Exécute les tests avec pytest
+
+  build_docker_image:
+    runs-on: ubuntu-latest  # Utilisation d'Ubuntu pour la construction de l'image Docker
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3  # Télécharge le code du dépôt
+
+      - name: Log in to Docker registry
+        uses: docker/login-action@v2  # Connexion au registre Docker
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}  # Utilise le nom d'utilisateur GitHub
+          password: ${{ secrets.GITHUB_TOKEN }}  # Utilise un secret GitHub Token pour la connexion
+
+      - name: Extract metadata for Docker image
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha
+            type=raw,value=latest  # Tag pour "latest"
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4  # Action pour construire et pousser l'image Docker
+        with:
+          context: .  # Utilise la racine du projet
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}  # Utilisation des tags générés
+          labels: ${{ steps.meta.outputs.labels }}  # Labels associés à l'image Docker
+
+  deploy_application:
+    runs-on: ubuntu-latest  # Utilisation d'Ubuntu pour le déploiement
+    needs: build_docker_image  # Ce job dépend du précédent
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3  # Télécharge le code du dépôt
+
+      - name: Login to Azure
+       # uses: azure/login@v1  # Action de connexion à Azure
+       # with:
+        #  creds: ${{ secrets.AZURE_CREDENTIALS }}  # Utilisation des credentials Azure stockés comme secrets GitHub
+
+
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2  # Installe Terraform
+        with:
+          terraform_version: 1.9.8  # Version de Terraform
+
+      - name: Initialize Terraform
+        working-directory: ./infrastructure  # Dossier d'infrastructure
+        run: terraform init  # Initialisation de Terraform
+
+      - name: Apply Terraform changes
+        working-directory: ./infrastructure  # Dossier d'infrastructure
+        run: terraform apply -auto-approve  # Application des modifications avec Terraform
+`
