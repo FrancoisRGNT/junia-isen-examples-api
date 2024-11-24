@@ -73,9 +73,9 @@ jobs:
         uses: actions/checkout@v3  # Télécharge le code du dépôt
 
       - name: Login to Azure
-       # uses: azure/login@v1  # Action de connexion à Azure
-       # with:
-        #  creds: ${{ secrets.AZURE_CREDENTIALS }}  # Utilisation des credentials Azure stockés comme secrets GitHub
+        uses: azure/login@v1  # Action de connexion à Azure
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}  # Utilisation des credentials Azure stockés comme secrets GitHub
 
 
 
