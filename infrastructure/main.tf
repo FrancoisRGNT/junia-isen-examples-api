@@ -15,7 +15,7 @@ resource "random_id" "unique_suffix" {
 
 # Groupe de ressources (nécessaire pour tous les services)
 resource "azurerm_resource_group" "rg_junia" {
-  name     = "${var.resource_group_name}"
+  name     = "${var.resource_group_name}${random_id.unique_suffix.hex}"
   location = "France Central"
 }
 
@@ -34,4 +34,13 @@ module "blob_storage" {
   container_name        = var.container_name
   resource_group_name   = azurerm_resource_group.rg_junia.name
   location              = var.location
+}
+
+module "network" {
+  source              = "./modules/network"
+  vnet_name           = var.vnet_name
+  address_space       = var.address_space
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  random_suffix       = random_id.unique_suffix.hex
 }

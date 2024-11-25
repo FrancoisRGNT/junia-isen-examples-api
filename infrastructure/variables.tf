@@ -41,3 +41,14 @@ variable "container_name" {
   type        = string
   default     = "test-container"
 }
+
+variable "vnet_name" {
+  description = "Nom du Virtual Network (VNet) utilisé pour le réseau principal."
+  type        = string
+  default     = "junia-exe-vnet"
+}
+
+variable "address_space" {
+  description = "Plage d'adresses CIDR utilisée pour le VNet."
+  type        = list(string)
+}
