@@ -13,3 +13,12 @@ resource "azurerm_storage_container" "blob_container" {
   storage_account_name  = azurerm_storage_account.blob_storage.name  #
   container_access_type = var.container_access_type
 }
+
+# Ajout d'un blob au conteneur de stockage.
+resource "azurerm_storage_blob" "quotes_blob" {
+  name                   = "quotes.json"  
+  storage_account_name   = azurerm_storage_account.storage_account.name
+  storage_container_name = azurerm_storage_container.storage_container.name
+  type                   = "Block"
+  source                 = "${path.module}/quotes.json"
+}

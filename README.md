@@ -1,46 +1,49 @@
-# Examples API
+# Projet de Cloud Computing
+## API développée sur Azure avec Terraform
 
-Simple API that returns example records from a database.
+### À propos du projet
 
-## Prerequisites
 
-- you need to install [uv](https://docs.astral.sh/uv/guides/install-python/)
-- you must have a PostgreSQL instance available with an `example` table
+Dans ce projet, nous avons conçu et provisionné une infrastructure cloud sur Microsoft Azure en utilisant Terraform. 
+Nous avons déployé une API,mais nous n'avons pas réussi à la connecter à une base de données 
+Nous avons mis en place un workflow sur Github pour réaliser des testes à chaque push
 
-## Installation
+## Groupe
 
-```shell
-# Install Python in the right version
-uv python install
+Ce projet a été réalisé par :
 
-# Install dependencies and create virtual env
-uv sync
-```
+- Joachim DIEU
+- François REGNAUT
+- Alexandre LUPINE
+- Victor MAES
 
-## Run
+## Technologies utilisées
 
-```shell
-# Export environment variables to connect to the PostgreSQL database...
-export DATABASE_HOST=
-export DATABASE_PORT=
-export DATABASE_NAME=
-export DATABASE_USER=
-export DATABASE_PASSWORD='' # Use single quotes to avoid shell interpolation with characters like $ or #
-# ...and the storage account
-export STORAGE_ACCOUNT_URL=
+- Terraform : version 1.5.7 pour la gestion de l'infrastructure en tant que code.
+- Python : version 3.12 pour le développement de l'API.
+- GitHub Actions : pour automatiser les workflows CI/CD.
+- Azure CLI : pour l'administration des ressources dans Azure.
 
-# Run the application
-uv run fastapi dev examples/examples.py
-```
 
-## Run tests
+## Structure du projet
 
-```
-uv run pytest tests/
-```
+- `.github` : contient les workflows pour CI/CD.
+- `api` : contient l'API développée avec FastAPI.
+- `infrastructure` : contient le code déclaratif pour provisionner l'infrastructure Azure avec Terraform.
+- `tests` : inclut les tests unitaires pour valider les endpoints de l'API.
 
-They go on:
+## Crédit
 
-- http://localhost:8000/docs
-- http://localhost:8000/
-- http://localhost:8000/examples
+Groupe LEDUC, main.tf du dossier network
+
+## Installation et déploiement
+
+1. Clonez ce dépôt sur votre machine et ouvrez le avec un IDE quelconque.
+2. Dans ./infrastructure, renommez le fichier "terraform.tfvars.sample" en "terraform.tfvars" et remplissez le avec toutes les informations requises.
+3. Dans le même chemin, exécuter les commandes : "terraform init", "terraform plan" et "terraform apply"
+
+### Prérequis
+
+- Terraform : version 1.5.7 ou supérieure (https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli).
+- Azure CLI : version 2.66 ou supérieure (https://learn.microsoft.com/fr-fr/cli/azure/install-azure-cli).
+- Un compte Azure valide avec les permissions nécessaires.

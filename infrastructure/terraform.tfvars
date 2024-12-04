@@ -1,4 +1,4 @@
-subscription_id = "af78abcc-53f1-4d15-8913-746a484b2952"
+subscription_id = "2b36cca1-30c3-40bb-9905-a856a9848fb7"
 
 resource_group_name = "app-service-junia"
 
